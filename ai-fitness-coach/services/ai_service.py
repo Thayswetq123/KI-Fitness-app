@@ -1,52 +1,68 @@
-import requests
-import os
-
-API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large"
-
-headers = {
-    "Authorization": f"Bearer {os.getenv('HF_TOKEN')}"
-}
-
 def analyze_fitness(age, weight, height, goal):
 
-    prompt = f"""
-Du bist ein professioneller Fitness Coach.
+    bmi = weight / ((height / 100) ** 2)
 
-Person:
-- Alter: {age}
-- Gewicht: {weight} kg
-- Größe: {height} cm
-- Ziel: {goal}
+    if goal == "Muskelaufbau":
 
-Erstelle:
-1. Körperanalyse
-2. Trainingsplan
-3. Ernährung
-4. Kalorien
-5. Fokus Muskelgruppen
+        return f"""
+💪 Muskelaufbau Analyse
 
-Antworte modern und motivierend.
+📊 Dein geschätzter BMI:
+{bmi:.1f}
+
+🏋️ Trainingsfokus:
+- Push Pull Legs Split
+- Progressive Overload
+- Fokus auf Brust, Rücken und Schultern
+
+🍗 Ernährung:
+- Hohe Proteinaufnahme
+- Ca. 300 kcal Überschuss
+- Viel Wasser trinken
+
+🔥 Empfehlung:
+Trainiere 4-5x pro Woche.
 """
 
-    payload = {
-        "inputs": prompt
-    }
+    elif goal == "Fett verlieren":
 
-    try:
+        return f"""
+🔥 Fettverlust Analyse
 
-        response = requests.post(
-            API_URL,
-            headers=headers,
-            json=payload,
-            timeout=60
-        )
+📊 Dein geschätzter BMI:
+{bmi:.1f}
 
-        data = response.json()
+🏃 Trainingsfokus:
+- Cardio + Krafttraining
+- HIIT Workouts
+- Core Training
 
-        if isinstance(data, list):
-            return data[0]["generated_text"]
+🥗 Ernährung:
+- Kaloriendefizit
+- Weniger Zucker
+- Mehr Protein
 
-        return str(data)
+🔥 Empfehlung:
+4x Training + tägliche Bewegung.
+"""
 
-    except Exception as e:
-        return f"Fehler: {str(e)}"
+    else:
+
+        return f"""
+⚡ Body Recomp Analyse
+
+📊 Dein geschätzter BMI:
+{bmi:.1f}
+
+🏋️ Trainingsfokus:
+- Krafttraining
+- Ganzkörperplan
+- Fokus auf Definition
+
+🥗 Ernährung:
+- Hohe Proteinaufnahme
+- Ausgewogene Ernährung
+
+🔥 Empfehlung:
+3-5x Training pro Woche.
+"""
