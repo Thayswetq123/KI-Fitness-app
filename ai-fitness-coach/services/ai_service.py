@@ -1,7 +1,7 @@
 import requests
 import os
 
-API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+API_URL = "https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2"
 
 headers = {
     "Authorization": f"Bearer {os.getenv('HF_TOKEN')}"
@@ -19,14 +19,13 @@ Person:
 - Ziel: {goal}
 
 Erstelle:
-
 1. Körperanalyse
 2. Trainingsplan
 3. Ernährung
-4. Kalorien Empfehlung
+4. Kalorien
 5. Fokus Muskelgruppen
 
-Antworte motivierend und modern.
+Antworte modern und motivierend.
 """
 
     payload = {
@@ -38,12 +37,16 @@ Antworte motivierend und modern.
         response = requests.post(
             API_URL,
             headers=headers,
-            json=payload
+            json=payload,
+            timeout=60
         )
 
         data = response.json()
 
-        return data[0]["generated_text"]
+        if isinstance(data, list):
+            return data[0]["generated_text"]
+
+        return str(data)
 
     except Exception as e:
         return f"Fehler: {str(e)}"
