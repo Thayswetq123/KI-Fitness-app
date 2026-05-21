@@ -1,30 +1,33 @@
-import openai
+from openai import OpenAI
 import os
 
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY")
+)
 
 def analyze_fitness(age, weight, height, goal):
 
     prompt = f"""
 Du bist ein Fitness Coach.
 
-Daten:
-- Alter: {age}
-- Gewicht: {weight}
-- Größe: {height}
-- Ziel: {goal}
+Alter: {age}
+Gewicht: {weight}
+Größe: {height}
+Ziel: {goal}
 
 Erstelle:
-1. Körperanalyse
-2. Trainingsplan
-3. Ernährungsplan
-4. Fokus-Muskeln
+- Körperanalyse
+- Trainingsplan
+- Ernährung
 """
 
     response = client.chat.completions.create(
         model="gpt-4.1-mini",
         messages=[
-            {"role": "user", "content": prompt}
+            {
+                "role": "user",
+                "content": prompt
+            }
         ]
     )
 
